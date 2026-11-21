@@ -1,0 +1,20 @@
+---
+description: GreenCarWash stack, service boundaries, and API conventions
+alwaysApply: true
+---
+
+Stack: ASP.NET Core 8 Web API, EF Core + Microsoft.EntityFrameworkCore.SqlServer, JWT Bearer, FluentValidation, Serilog, Polly, MailKit, NUnit+Moq+FluentAssertions, Swagger.
+
+Pattern per service: Controller -> Service -> Repository -> DbContext. DTOs only in controllers, never return entities.
+
+Database per service. NO cross-database joins or FKs. Cross-service data only via REST (typed HttpClient + Polly).
+
+All times UTC, stored as DATETIME2. Money decimal(10,2). Enums stored as strings.
+
+Global exception middleware returning ProblemDetails. Serilog with CorrelationId. Correct HTTP codes (200/201/400/401/403/404/409/500).
+
+Internal endpoints protected by role "Service" (service JWT or X-Internal-Key).
+
+No frontend. The washer queue is NOT in the database; it is an in-memory structure in code (WasherService).
+
+Follow docs/schema.sql exactly.
